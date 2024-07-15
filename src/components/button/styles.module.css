@@ -1,0 +1,15 @@
+.button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+.button:hover {
+  background-color: #f0f0f0;
+}

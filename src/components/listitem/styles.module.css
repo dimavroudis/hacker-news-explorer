@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+.content {
+  display: inline-block;
+  border: none;
+  background-color: transparent;
+  text-decoration: none;
+  color: var(--main-text-color);
+}
+
+.content[role="button"] {
+  cursor: pointer;
+}
+
+*:not(:hover) > .container[aria-selected="true"],
+.container[role="option"]:hover {
+  background-color: var(--selected-bg-color);
+}
+
+.container[role="option"] {
+  cursor: pointer;
+}
+
+.title {
+  font-size: 1em;
+  margin: 0 0 0.1em;
+}
+
+.meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  font-size: 0.825em;
+  color: var(--secondary-text-color);
+}
+
+.seperator {
+  display: inline-block;
+  height: 1em;
+  width: 1px;
+  background-color: currentColor;
+  margin: 0 0.75em;
+  border: none;
+}

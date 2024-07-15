@@ -1,0 +1,7 @@
+.listbox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--main-bg-color);
+  box-sizing: border-box;
+}
