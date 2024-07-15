@@ -34,6 +34,19 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
   const hasSuggestions = suggestions.length > 0;
   const isDropdownOpen = isFocused && hasSuggestions;
 
+  const maybeSetSuggestions = (value: string, results: ListItem[]) => {
+    if (!inputRef.current) {
+      return;
+    }
+    if (inputRef.current.value === value) {
+      setSuggestions(results);
+    }
+    if (inputRef.current.value.length < minChars) {
+      setSuggestions([]);
+      return;
+    }
+  };
+
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
@@ -47,7 +60,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
       return;
     }
     const results = await searchCallback(value);
-    setSuggestions(results);
+    maybeSetSuggestions(value, results);
   };
 
   const handleSelect = (item: ListItem) => {
@@ -108,6 +121,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
           id={inputId}
           role="combobox"
           type="text"
+          spellCheck="false"
           aria-expanded={isDropdownOpen}
           placeholder={placeholder}
           onChange={handleChange}
