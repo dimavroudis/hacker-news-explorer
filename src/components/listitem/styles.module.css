@@ -33,6 +33,10 @@
   margin: 0 0 0.1em;
 }
 
+.title em {
+  font-style: normal;
+  color: var(--primary-color);
+}
 .meta {
   display: flex;
   flex-direction: row;
@@ -40,6 +44,11 @@
   margin: 0;
   font-size: 0.825em;
   color: var(--secondary-text-color);
+}
+
+.meta em {
+  font-style: normal;
+  color: var(--primary-color);
 }
 
 .seperator {

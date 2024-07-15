@@ -14,12 +14,22 @@ interface ListitemProps {
   children?: React.ReactNode;
   onClick?: (item: ListItem) => void;
   className?: string;
+  highlight?: boolean;
 }
 
 const Seperator = () => <span className={styles.seperator} />;
 
 const Listitem: React.FC<ListitemProps> = memo(
-  ({ item, children, onClick, className, selected, setsize, posinset }) => {
+  ({
+    item,
+    children,
+    onClick,
+    className,
+    selected,
+    setsize,
+    posinset,
+    highlight,
+  }) => {
     const selectable = !!onClick;
 
     const handleOnClick = () => {
@@ -33,7 +43,12 @@ const Listitem: React.FC<ListitemProps> = memo(
       : item.points === 1
       ? "1 point"
       : `${item.points} points`;
-    const author = item.author === "" ? "No author" : ` by ${item.author}`;
+    const author =
+      item.author === ""
+        ? "No author"
+        : ` by ${
+            (highlight && item._highlightResult.author?.value) || item.author
+          }`;
     const comments = !item.num_comments
       ? "No comments"
       : item.num_comments === 1
@@ -52,6 +67,12 @@ const Listitem: React.FC<ListitemProps> = memo(
       onClick: selectable ? handleOnClick : undefined,
     };
 
+    const titleKey = "title" in item ? "title" : "story_title";
+    const title =
+      (highlight && item._highlightResult[titleKey]?.value) ||
+      item[titleKey] ||
+      "";
+
     const classNames = [styles.container, className]
       .filter(Boolean)
       .join(" ")
@@ -60,11 +81,14 @@ const Listitem: React.FC<ListitemProps> = memo(
     return (
       <div {...itemProps} className={classNames}>
         <Content className={styles.content} {...contentProps}>
-          <h3 className={styles.title}>{item.title || item.story_title}</h3>
+          <h3
+            className={styles.title}
+            dangerouslySetInnerHTML={{ __html: title }}
+          />
           <p className={styles.meta}>
             <span>{points}</span>
             <Seperator />
-            <span>{author}</span>
+            <span dangerouslySetInnerHTML={{ __html: author }} />
             <Seperator />
             <span>{comments}</span>
           </p>

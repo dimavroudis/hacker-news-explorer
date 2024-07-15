@@ -127,6 +127,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
             <Listitem
               key={item.objectID}
               item={item}
+              highlight
               className={styles.listitem}
             />
           ))}

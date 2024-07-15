@@ -1,8 +1,10 @@
 export interface SearchResult {
   _highlightResult: {
     author: HighlightResult;
-    title: HighlightResult;
-    url: HighlightResult;
+    title?: HighlightResult;
+    url?: HighlightResult;
+    story_title?: HighlightResult;
+    story_url?: HighlightResult;
   };
   _tags?: string[];
   author: string;
