@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
 import styles from "./styles.module.css";
 
@@ -14,7 +15,7 @@ interface DropdownProps {
   onClose?: (event: MouseEvent | KeyboardEvent) => void;
 }
 
-const getDropdownStyles = (target: HTMLElement) => {
+const getDropdownStyles = (target: HTMLElement | null) => {
   if (!target) {
     return;
   }
@@ -24,12 +25,17 @@ const getDropdownStyles = (target: HTMLElement) => {
     top: rect.bottom,
     left: rect.left,
     maxWidth: rect.width,
+    height: window.innerHeight - rect.bottom - 10,
   };
 };
 
 const Dropdown = forwardRef<HTMLDivElement | null, DropdownProps>(
   ({ children, target, open = false, onClose }, ref) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const resizeObserver = useRef<ResizeObserver | null>(null);
+    const [dropdownStyles, setDropdownStyles] = useState<React.CSSProperties>(
+      {}
+    );
 
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
@@ -67,27 +73,40 @@ const Dropdown = forwardRef<HTMLDivElement | null, DropdownProps>(
       [onClose]
     );
 
+    const handleResize = useCallback(() => {
+      setDropdownStyles(getDropdownStyles(target) || dropdownStyles);
+    }, [dropdownStyles, target]);
+
     useEffect(() => {
       if (!open) {
         return;
       }
+
+      handleResize();
+      resizeObserver.current = new ResizeObserver(handleResize);
+      if (target) {
+        resizeObserver.current.observe(window.document.body);
+      }
+
       document.addEventListener("click", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
 
       return () => {
+        if (resizeObserver.current && target) {
+          resizeObserver.current.unobserve(target);
+        }
+
         document.removeEventListener("click", handleClickOutside);
         document.removeEventListener("keydown", handleKeyDown);
       };
-    }, [handleClickOutside, handleKeyDown, open]);
+    }, [handleClickOutside, handleKeyDown, open, target]);
 
     if (!open || !target) {
       return null;
     }
 
-    const position = getDropdownStyles(target);
-
     return (
-      <div style={position} className={styles.dropdown} ref={dropdownRef}>
+      <div style={dropdownStyles} className={styles.dropdown} ref={dropdownRef}>
         {children}
       </div>
     );
