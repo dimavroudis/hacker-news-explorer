@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Dropdown from "../dropdown";
 import Listbox from "../listbox";
 import Listitem, { ListItem } from "../listitem";
@@ -25,6 +25,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
   searchCallback,
   excludeItems = [],
 }) => {
+  const id = useId();
   const [suggestions, setSuggestions] = useState<ListItem[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -97,11 +98,14 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     }
   }, [excludeItems, suggestions]);
 
+  const inputId = `autosuggest-${id}`;
+
   return (
     <>
       <div className={styles.control}>
-        <label>{label}</label>
+        <label htmlFor={inputId}>{label}</label>
         <input
+          id={inputId}
           role="combobox"
           type="text"
           aria-expanded={isDropdownOpen}

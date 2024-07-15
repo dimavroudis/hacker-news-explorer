@@ -21,7 +21,6 @@ const Listbox: React.FC<ListboxProps> = memo(
         <Listitem
           key={index}
           {...child.props}
-          selectable
           posinset={index + 1}
           setsize={React.Children.count(children)}
           selected={index === activeIndex}
