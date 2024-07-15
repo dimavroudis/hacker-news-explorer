@@ -19,8 +19,7 @@
   cursor: pointer;
 }
 
-*:not(:hover) > .container[aria-selected="true"],
-.container[role="option"]:hover {
+.container[aria-selected="true"] {
   background-color: var(--selected-bg-color);
 }
 

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { SearchResult } from "../../types/api";
+import type { SearchResult } from "../../types/api";
 import styles from "./styles.module.css";
 
 export interface ListItem extends SearchResult {
@@ -13,6 +13,8 @@ interface ListitemProps {
   setsize?: number;
   children?: React.ReactNode;
   onClick?: (item: ListItem) => void;
+  onMouseEnter?: (e: React.MouseEvent, item: ListItem) => void;
+  onMouseMove?: (e: React.MouseEvent, item: ListItem) => void;
   className?: string;
   highlight?: boolean;
 }
@@ -24,6 +26,8 @@ const Listitem: React.FC<ListitemProps> = memo(
     item,
     children,
     onClick,
+    onMouseEnter,
+    onMouseMove,
     className,
     selected,
     setsize,
@@ -35,6 +39,18 @@ const Listitem: React.FC<ListitemProps> = memo(
     const handleOnClick = () => {
       if (onClick) {
         onClick(item);
+      }
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent) => {
+      if (onMouseEnter) {
+        onMouseEnter(e, item);
+      }
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+      if (onMouseMove) {
+        onMouseMove(e, item);
       }
     };
 
@@ -77,7 +93,13 @@ const Listitem: React.FC<ListitemProps> = memo(
       .trim();
 
     return (
-      <div {...itemProps} className={classNames} onClick={handleOnClick}>
+      <div
+        {...itemProps}
+        className={classNames}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onClick={handleOnClick}
+      >
         <Content className={styles.content} {...contentProps}>
           <h3
             className={styles.title}

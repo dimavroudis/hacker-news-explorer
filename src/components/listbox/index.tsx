@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect } from "react";
-import styles from "./styles.module.css";
 import Listitem, { ListItem } from "../listitem";
+import debounceLeading from "../../utils/debounceLeading";
+import styles from "./styles.module.css";
 
 interface ListboxProps {
   className?: string;
@@ -12,7 +13,35 @@ const Listbox: React.FC<ListboxProps> = memo(
   ({ children, className, onSelect, ...props }) => {
     const listboxRef = React.useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = React.useState(0);
+    const mousePosition = React.useRef({ x: 0, y: 0 });
 
+    const handleMouseEnter = useCallback(
+      (e: React.MouseEvent) => {
+        if (!e.target || !(e.target instanceof HTMLElement)) {
+          return;
+        }
+
+        // do not update active index if the mouse is not moving
+        if (
+          e.clientX === mousePosition.current.x &&
+          e.clientY === mousePosition.current.y
+        ) {
+          return;
+        }
+
+        mousePosition.current = { x: e.clientX, y: e.clientY };
+
+        const option = e.target.closest("[role='option']");
+        if (!option || !option.hasAttribute("aria-posinset")) {
+          setActiveIndex(-1);
+          return;
+        }
+        const index =
+          parseInt(option.getAttribute("aria-posinset") || "0", 10) - 1;
+        setActiveIndex(index);
+      },
+      [setActiveIndex]
+    );
 
     const items = React.Children.map(children, (child, index) => {
       if (!React.isValidElement(child)) {
@@ -26,6 +55,8 @@ const Listbox: React.FC<ListboxProps> = memo(
           setsize={React.Children.count(children)}
           selected={index === activeIndex}
           onClick={onSelect}
+          onMouseEnter={debounceLeading(handleMouseEnter)}
+          onMouseMove={debounceLeading(handleMouseEnter)}
         />
       );
     });
