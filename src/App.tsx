@@ -5,12 +5,13 @@ import Listitem, { ListItem } from "./components/listitem";
 
 import "./App.css";
 import Button from "./components/button";
-import useSession from "./hooks/useSession";
+import useStorage from "./hooks/useStorage";
 
 const HACKER_NEWS_API = "https://hn.algolia.com/api/v1/search?query=";
+const STORAGE_KEY = "hacker_news_stories";
 
 function App() {
-  const [items, setItems] = useSession<SearchResult[]>("data", []);
+  const [items, setItems] = useStorage<SearchResult[]>(STORAGE_KEY, []);
 
   const handleSearch = useCallback(async (value: string) => {
     const res = await fetch(`${HACKER_NEWS_API}${value}`);
