@@ -63,8 +63,6 @@ const Listitem: React.FC<ListitemProps> = memo(
       "aria-selected": selected,
       "aria-setsize": setsize,
       "aria-posinset": posinset,
-      // tabIndex: selectable ? -1 : undefined,
-      onClick: selectable ? handleOnClick : undefined,
     };
 
     const titleKey = "title" in item ? "title" : "story_title";
@@ -79,7 +77,7 @@ const Listitem: React.FC<ListitemProps> = memo(
       .trim();
 
     return (
-      <div {...itemProps} className={classNames}>
+      <div {...itemProps} className={classNames} onClick={handleOnClick}>
         <Content className={styles.content} {...contentProps}>
           <h3
             className={styles.title}

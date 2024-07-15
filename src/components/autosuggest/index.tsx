@@ -59,6 +59,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
       }
       return;
     }
+    setIsFocused(true);
     const results = await searchCallback(value);
     maybeSetSuggestions(value, results);
   };
@@ -95,6 +96,10 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     }
   };
 
+  const handleClick: React.MouseEventHandler<HTMLInputElement> = () => {
+    setIsFocused(true);
+  };
+
   useEffect(() => {
     const hasExcludedItems =
       excludeItems.length &&
@@ -127,6 +132,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
           onChange={handleChange}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
+          onClick={handleClick}
           ref={inputRef}
         />
       </div>

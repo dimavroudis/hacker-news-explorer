@@ -11,7 +11,8 @@ interface ListboxProps {
 const Listbox: React.FC<ListboxProps> = memo(
   ({ children, className, onSelect, ...props }) => {
     const listboxRef = React.useRef<HTMLDivElement>(null);
-    const [activeIndex, setActiveIndex] = React.useState(-1);
+    const [activeIndex, setActiveIndex] = React.useState(0);
+
 
     const items = React.Children.map(children, (child, index) => {
       if (!React.isValidElement(child)) {
