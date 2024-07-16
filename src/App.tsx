@@ -58,7 +58,7 @@ function App() {
           <p>No saved stories</p>
         ) : (
           <>
-            <div role="listbox" className="saved-stories">
+            <div role="list" className="saved-stories">
               {items.map((item) => (
                 <div role="listitem" key={item.objectID}>
                   <Story item={item} />

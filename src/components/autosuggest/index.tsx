@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Dropdown from "../dropdown";
-import Listbox, {Listitem} from "../listbox";
+import Listbox, { Listitem } from "../listbox";
 import styles from "./styles.module.css";
 import Story from "../story";
 import type { SearchResult } from "../../types/api";
@@ -29,6 +29,8 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
   const id = useId();
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -65,7 +67,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     maybeSetSuggestions(value, results);
   };
 
-  const handleSelect = (e: React.MouseEvent | {target:Element}) => {
+  const handleSelect = (e: React.MouseEvent | { target: Element }) => {
     if (!e.target || !(e.target instanceof HTMLElement)) {
       return;
     }
@@ -75,8 +77,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
       return;
     }
 
-    const index =
-      parseInt(option.getAttribute("aria-posinset") || "0", 10) - 1;
+    const index = parseInt(option.getAttribute("aria-posinset") || "0", 10) - 1;
     const item = suggestions[index];
 
     if (onSelect) {
@@ -114,6 +115,10 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     setIsFocused(true);
   };
 
+  const handleActiveDescedantUpdate = (index: number) => {
+    setActiveIndex(index);
+  };
+
   useEffect(() => {
     const hasExcludedItems =
       excludeItems.length &&
@@ -130,7 +135,17 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     }
   }, [excludeItems, suggestions]);
 
+  const getListItemId = (itemId: string) => {
+    return `autosuggest-listitem-${id}-${itemId}`;
+  };
+
   const inputId = `autosuggest-${id}`;
+  const listboxId = `autosuggest-listbox-${id}`;
+
+  const ariaControls = isDropdownOpen ? listboxId : undefined;
+  const ariaActiveDescendant = isDropdownOpen
+    ? getListItemId(suggestions[activeIndex]?.objectID)
+    : undefined;
 
   return (
     <>
@@ -138,10 +153,12 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
         <label htmlFor={inputId}>{label}</label>
         <input
           id={inputId}
-          role="combobox"
           type="text"
           spellCheck="false"
+          role="combobox"
           aria-expanded={isDropdownOpen}
+          aria-controls={ariaControls}
+          aria-activedescendant={ariaActiveDescendant}
           placeholder={placeholder}
           onChange={handleChange}
           onFocus={handleFocus}
@@ -156,11 +173,17 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
         onClose={handleClose}
         ref={dropdownRef}
       >
-        <Listbox onSelect={handleSelect}>
+        <Listbox
+          id={listboxId}
+          onSelectItem={handleSelect}
+          onUpdateActiveDescendant={handleActiveDescedantUpdate}
+          aria-label="Related stories"
+        >
           {suggestions.map((item) => (
             <Listitem
               key={item.objectID}
               className={styles.listitem}
+              id={getListItemId(item.objectID)}
             >
               <Story item={item} highlight selectable />
             </Listitem>

@@ -3,17 +3,35 @@ import Listitem from "./listitem";
 import debounceLeading from "../../utils/debounceLeading";
 import styles from "./styles.module.css";
 
-interface ListboxProps {
+interface ListboxProps extends React.HTMLAttributes<HTMLDivElement> {
+  id?: string;
   className?: string;
   children?: React.ReactNode;
-  onSelect?: (e: React.MouseEvent | {target:Element}) => void;
+  onSelectItem?: (e: React.MouseEvent | { target: Element }) => void;
+  onUpdateActiveDescendant?: (index: number) => void;
 }
 
 const Listbox: React.FC<ListboxProps> = memo(
-  ({ children, className, onSelect, ...props }) => {
+  ({
+    children,
+    className,
+    onSelectItem,
+    onUpdateActiveDescendant,
+    ...props
+  }) => {
     const listboxRef = React.useRef<HTMLDivElement>(null);
-    const [activeIndex, setActiveIndex] = React.useState(0);
+    const [activeIndex, _setActiveIndex] = React.useState(0);
     const mousePosition = React.useRef({ x: 0, y: 0 });
+
+    const setActiveIndex = useCallback(
+      (index: number) => {
+        _setActiveIndex(index);
+        if (onUpdateActiveDescendant) {
+          onUpdateActiveDescendant(index);
+        }
+      },
+      [_setActiveIndex, onUpdateActiveDescendant]
+    );
 
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent) => {
@@ -43,23 +61,27 @@ const Listbox: React.FC<ListboxProps> = memo(
       [setActiveIndex]
     );
 
-    const items = useMemo(() => React.Children.map(children, (child, index) => {
-      if (!React.isValidElement(child)) {
-        return null;
-      }
-      return (
-        <Listitem
-          key={index}
-          {...child.props}
-          posinset={index + 1}
-          setsize={React.Children.count(children)}
-          selected={index === activeIndex}
-          onClick={onSelect}
-          onMouseEnter={debounceLeading(handleMouseEnter)}
-          onMouseMove={debounceLeading(handleMouseEnter)}
-        />
-      );
-    }), [handleMouseEnter, onSelect, activeIndex, children]);
+    const items = useMemo(
+      () =>
+        React.Children.map(children, (child, index) => {
+          if (!React.isValidElement(child)) {
+            return null;
+          }
+          return (
+            <Listitem
+              key={index}
+              {...child.props}
+              posinset={index + 1}
+              setsize={React.Children.count(children)}
+              selected={index === activeIndex}
+              onClick={onSelectItem}
+              onMouseEnter={debounceLeading(handleMouseEnter)}
+              onMouseMove={debounceLeading(handleMouseEnter)}
+            />
+          );
+        }),
+      [handleMouseEnter, onSelectItem, activeIndex, children]
+    );
 
     const scrollToItem = useCallback(
       (index: number) => {
@@ -114,15 +136,17 @@ const Listbox: React.FC<ListboxProps> = memo(
           scrollToItem(items.length - 1);
           setActiveIndex(items.length - 1);
         }
-        if (e.key === "Enter" && listboxRef.current ) {
-          const item = listboxRef.current.querySelector(`[aria-posinset="${activeIndex + 1}"]`)
-          if (onSelect && item) {
-            const newEvent = { target: item};
-            onSelect(newEvent);
+        if (e.key === "Enter" && listboxRef.current) {
+          const item = listboxRef.current.querySelector(
+            `[aria-posinset="${activeIndex + 1}"]`
+          );
+          if (onSelectItem && item) {
+            const newEvent = { target: item };
+            onSelectItem(newEvent);
           }
         }
       },
-      [items, activeIndex, scrollToItem, onSelect]
+      [items, activeIndex, scrollToItem, onSelectItem]
     );
 
     useEffect(() => {
