@@ -3,7 +3,7 @@ import Dropdown from "../dropdown";
 import Listbox, { Listitem } from "../listbox";
 import styles from "./styles.module.css";
 
-interface AutoSuggestProps<S extends Record<string, any>> {
+interface AutoSuggestProps<S extends Record<string, unknown>> {
   label: string;
   searchCallback: (value: string) => Promise<S[]>;
   Item: React.ElementType;
@@ -18,7 +18,7 @@ interface AutoSuggestProps<S extends Record<string, any>> {
   excludeItems?: string[];
 }
 
-const AutoSuggest = <S extends Record<string, any>>({
+const AutoSuggest = <S extends Record<string, unknown>>({
   label,
   placeholder,
   Item,
@@ -127,17 +127,17 @@ const AutoSuggest = <S extends Record<string, any>>({
     const hasExcludedItems =
       excludeItems.length &&
       suggestions.some((suggestion) =>
-        excludeItems.includes(suggestion[itemIdKey])
+        excludeItems.includes(suggestion[itemIdKey] as string)
       );
 
     if (hasExcludedItems) {
       const filteredSuggestions = suggestions.filter(
-        (suggestion) => !excludeItems.includes(suggestion[itemIdKey])
+        (suggestion) => !excludeItems.includes(suggestion[itemIdKey] as string)
       );
       setSuggestions(filteredSuggestions);
       return;
     }
-  }, [excludeItems, suggestions]);
+  }, [excludeItems, itemIdKey, suggestions]);
 
   const getListItemId = (itemId: string) => {
     return `autosuggest-listitem-${id}-${itemId}`;
@@ -148,7 +148,7 @@ const AutoSuggest = <S extends Record<string, any>>({
 
   const ariaControls = isDropdownOpen ? listboxId : undefined;
   const ariaActiveDescendant = isDropdownOpen
-    ? getListItemId(suggestions[activeIndex][itemIdKey])
+    ? getListItemId(suggestions[activeIndex][itemIdKey] as string)
     : undefined;
 
   return (
@@ -186,9 +186,9 @@ const AutoSuggest = <S extends Record<string, any>>({
         >
           {suggestions.map((item) => (
             <Listitem
-              key={item[itemIdKey]}
+              key={item[itemIdKey] as string}
               className={styles.listitem}
-              id={getListItemId(item[itemIdKey])}
+              id={getListItemId(item[itemIdKey] as string)}
             >
               <Item item={item} />
             </Listitem>

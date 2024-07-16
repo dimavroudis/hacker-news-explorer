@@ -146,7 +146,7 @@ const Listbox: React.FC<ListboxProps> = memo(
           }
         }
       },
-      [items, activeIndex, scrollToItem, onSelectItem]
+      [items, activeIndex, scrollToItem, setActiveIndex, onSelectItem]
     );
 
     useEffect(() => {

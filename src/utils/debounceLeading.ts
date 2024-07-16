@@ -1,6 +1,6 @@
-type DebouncedFunction<T extends any[]> = (...args: T) => void;
+type DebouncedFunction<T extends unknown[]> = (...args: T) => void;
 
-function debounceLeading<T extends any[]>(
+function debounceLeading<T extends unknown[]>(
   func: DebouncedFunction<T>,
   timeout = 300
 ): DebouncedFunction<T> {
@@ -8,7 +8,8 @@ function debounceLeading<T extends any[]>(
 
   return (...args: T) => {
     if (!timer) {
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       func.apply(this, args);
     }
     clearTimeout(timer);

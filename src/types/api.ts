@@ -1,4 +1,4 @@
-export interface SearchResult {
+export interface SearchResult extends Record<string, unknown> {
   _highlightResult: {
     author: HighlightResult;
     title?: HighlightResult;

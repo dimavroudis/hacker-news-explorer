@@ -102,7 +102,7 @@ const Dropdown = forwardRef<HTMLDivElement | null, DropdownProps>(
         document.removeEventListener("click", handleClickOutside);
         document.removeEventListener("keydown", handleKeyDown);
       };
-    }, [handleClickOutside, handleKeyDown, open, target]);
+    }, [handleClickOutside, handleKeyDown, handleResize, open, target]);
 
     if (!open || !target) {
       return null;
