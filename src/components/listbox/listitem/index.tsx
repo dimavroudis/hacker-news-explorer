@@ -25,13 +25,6 @@ const Listitem: React.FC<ListitemProps> = memo(
     setsize,
     posinset,
   }) => {
-    const itemProps = {
-      role: "option",
-      "aria-selected": selected,
-      "aria-setsize": setsize,
-      "aria-posinset": posinset,
-    };
-
     const classNames = [styles.container, className]
       .filter(Boolean)
       .join(" ")
@@ -39,9 +32,12 @@ const Listitem: React.FC<ListitemProps> = memo(
 
     return (
       <div
-        {...itemProps}
         id={id}
         className={classNames}
+        role="option"
+        aria-selected={selected}
+        aria-setsize={setsize}
+        aria-posinset={posinset}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}
         onClick={onClick}

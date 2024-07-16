@@ -2,32 +2,36 @@ import { useEffect, useId, useRef, useState } from "react";
 import Dropdown from "../dropdown";
 import Listbox, { Listitem } from "../listbox";
 import styles from "./styles.module.css";
-import Story from "../story";
-import type { SearchResult } from "../../types/api";
 
-interface AutoSuggestProps {
+interface AutoSuggestProps<S extends Record<string, any>> {
   label: string;
-  searchCallback: (value: string) => Promise<SearchResult[]>;
+  searchCallback: (value: string) => Promise<S[]>;
+  Item: React.ElementType;
+  itemIdKey: string;
+  listboxLabel?: string;
   placeholder?: string;
   minChars?: number;
   clearOnSelect?: boolean;
   closeOnSelect?: boolean;
   onChange?: (value: string) => void;
-  onSelect?: (item: SearchResult) => void;
+  onSelect?: (item: S) => void;
   excludeItems?: string[];
 }
 
-const AutoSuggest: React.FC<AutoSuggestProps> = ({
+const AutoSuggest = <S extends Record<string, any>>({
   label,
   placeholder,
+  Item,
+  itemIdKey,
+  listboxLabel,
   minChars = 3,
   onChange,
   onSelect,
   searchCallback,
   excludeItems = [],
-}) => {
+}: AutoSuggestProps<S>) => {
   const id = useId();
-  const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
+  const [suggestions, setSuggestions] = useState<S[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -37,7 +41,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
   const hasSuggestions = suggestions.length > 0;
   const isDropdownOpen = isFocused && hasSuggestions;
 
-  const maybeSetSuggestions = (value: string, results: SearchResult[]) => {
+  const maybeSetSuggestions = (value: string, results: S[]) => {
     if (!inputRef.current) {
       return;
     }
@@ -123,12 +127,12 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     const hasExcludedItems =
       excludeItems.length &&
       suggestions.some((suggestion) =>
-        excludeItems.includes(suggestion.objectID)
+        excludeItems.includes(suggestion[itemIdKey])
       );
 
     if (hasExcludedItems) {
       const filteredSuggestions = suggestions.filter(
-        (suggestion) => !excludeItems.includes(suggestion.objectID)
+        (suggestion) => !excludeItems.includes(suggestion[itemIdKey])
       );
       setSuggestions(filteredSuggestions);
       return;
@@ -144,7 +148,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
 
   const ariaControls = isDropdownOpen ? listboxId : undefined;
   const ariaActiveDescendant = isDropdownOpen
-    ? getListItemId(suggestions[activeIndex]?.objectID)
+    ? getListItemId(suggestions[activeIndex][itemIdKey])
     : undefined;
 
   return (
@@ -155,6 +159,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
           id={inputId}
           type="text"
           spellCheck="false"
+          autoComplete="off"
           role="combobox"
           aria-expanded={isDropdownOpen}
           aria-controls={ariaControls}
@@ -177,15 +182,15 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
           id={listboxId}
           onSelectItem={handleSelect}
           onUpdateActiveDescendant={handleActiveDescedantUpdate}
-          aria-label="Related stories"
+          aria-label={listboxLabel}
         >
           {suggestions.map((item) => (
             <Listitem
-              key={item.objectID}
+              key={item[itemIdKey]}
               className={styles.listitem}
-              id={getListItemId(item.objectID)}
+              id={getListItemId(item[itemIdKey])}
             >
-              <Story item={item} highlight selectable />
+              <Item item={item} />
             </Listitem>
           ))}
         </Listbox>

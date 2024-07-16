@@ -10,6 +10,10 @@ import Story from "./components/story";
 const HACKER_NEWS_API = "https://hn.algolia.com/api/v1/search?query=";
 const STORAGE_KEY = "hacker_news_stories";
 
+const HighlihgtedStory = (props: React.ComponentProps<typeof Story>) => (
+  <Story {...props} highlight selectable />
+);
+
 function App() {
   const [items, setItems] = useStorage<SearchResult[]>(STORAGE_KEY, []);
 
@@ -45,7 +49,10 @@ function App() {
     <div className="container">
       <div className="header">
         <AutoSuggest
+          Item={HighlihgtedStory}
+          itemIdKey="objectID"
           label="Search"
+          listboxLabel="Search results"
           placeholder="Search title"
           searchCallback={handleSearch}
           onSelect={handleSelect}
