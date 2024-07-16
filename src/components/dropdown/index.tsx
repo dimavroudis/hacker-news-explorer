@@ -77,8 +77,24 @@ const Dropdown = forwardRef<HTMLDivElement | null, DropdownProps>(
     );
 
     const handleResize = useCallback(() => {
-      setDropdownStyles(getDropdownStyles(target) || dropdownStyles);
-    }, [dropdownStyles, target]);
+      setDropdownStyles(
+        (prevStyles) => getDropdownStyles(target) || prevStyles
+      );
+    }, [target]);
+
+    useEffect(() => {
+      if (!open) {
+        return;
+      }
+
+      document.addEventListener("click", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }, [handleClickOutside, handleKeyDown, open]);
 
     useEffect(() => {
       if (!open) {
@@ -88,21 +104,15 @@ const Dropdown = forwardRef<HTMLDivElement | null, DropdownProps>(
       handleResize();
       resizeObserver.current = new ResizeObserver(debounce(handleResize, 10));
       if (target) {
-        resizeObserver.current.observe(window.document.body);
+        resizeObserver.current.observe(target);
       }
-
-      document.addEventListener("click", handleClickOutside);
-      document.addEventListener("keydown", handleKeyDown);
 
       return () => {
         if (resizeObserver.current && target) {
           resizeObserver.current.unobserve(target);
         }
-
-        document.removeEventListener("click", handleClickOutside);
-        document.removeEventListener("keydown", handleKeyDown);
       };
-    }, [handleClickOutside, handleKeyDown, handleResize, open, target]);
+    }, [handleResize, open, target]);
 
     if (!open || !target) {
       return null;

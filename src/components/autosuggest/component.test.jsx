@@ -56,7 +56,7 @@ const ITEMS = [
 ];
 
 const Item = ({ item }) => (
-  <div role="option">{item.title || item.story_title || "No title"}</div>
+  <div>{item.title || item.story_title || "No title"}</div>
 );
 
 describe("Autosuggest", async () => {
