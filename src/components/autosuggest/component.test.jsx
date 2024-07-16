@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { fireEvent } from "@testing-library/dom";
 import Autosuggest from ".";
@@ -54,6 +55,10 @@ const ITEMS = [
   },
 ];
 
+const Item = ({ item }) => (
+  <div role="option">{item.title || item.story_title || "No title"}</div>
+);
+
 describe("Autosuggest", async () => {
   it("should render", () => {
     const callback = vi.fn().mockImplementation(() => Promise.resolve(ITEMS));
@@ -61,7 +66,7 @@ describe("Autosuggest", async () => {
     render(
       <Autosuggest
         label="Search"
-        Item={"div"}
+        Item={Item}
         itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
@@ -80,7 +85,7 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
-        Item={"div"}
+        Item={Item}
         itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
@@ -102,7 +107,7 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
-        Item={"div"}
+        Item={Item}
         itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
@@ -122,7 +127,7 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
-        Item={"div"}
+        Item={Item}
         itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
@@ -144,7 +149,7 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
-        Item={"div"}
+        Item={Item}
         itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}

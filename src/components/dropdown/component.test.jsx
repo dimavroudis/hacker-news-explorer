@@ -1,7 +1,7 @@
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { render } from "@testing-library/react";
 import Dropdown from ".";
 
-// Mock implementation of ResizeObserver
 describe("Dropdown", () => {
   let fakeTarget;
 
@@ -10,7 +10,7 @@ describe("Dropdown", () => {
   });
 
   afterAll(() => {
-    delete global.ResizeObserver;
+    fakeTarget = null;
   });
 
   it("renders nothing when closed", () => {
