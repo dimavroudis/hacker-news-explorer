@@ -1,18 +1,19 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Dropdown from "../dropdown";
-import Listbox from "../listbox";
-import Listitem, { ListItem } from "../listitem";
+import Listbox, {Listitem} from "../listbox";
 import styles from "./styles.module.css";
+import Story from "../story";
+import type { SearchResult } from "../../types/api";
 
 interface AutoSuggestProps {
   label: string;
-  searchCallback: (value: string) => Promise<ListItem[]>;
+  searchCallback: (value: string) => Promise<SearchResult[]>;
   placeholder?: string;
   minChars?: number;
   clearOnSelect?: boolean;
   closeOnSelect?: boolean;
   onChange?: (value: string) => void;
-  onSelect?: (item: ListItem) => void;
+  onSelect?: (item: SearchResult) => void;
   excludeItems?: string[];
 }
 
@@ -26,7 +27,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
   excludeItems = [],
 }) => {
   const id = useId();
-  const [suggestions, setSuggestions] = useState<ListItem[]>([]);
+  const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -34,7 +35,7 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
   const hasSuggestions = suggestions.length > 0;
   const isDropdownOpen = isFocused && hasSuggestions;
 
-  const maybeSetSuggestions = (value: string, results: ListItem[]) => {
+  const maybeSetSuggestions = (value: string, results: SearchResult[]) => {
     if (!inputRef.current) {
       return;
     }
@@ -64,7 +65,20 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
     maybeSetSuggestions(value, results);
   };
 
-  const handleSelect = (item: ListItem) => {
+  const handleSelect = (e: React.MouseEvent | {target:Element}) => {
+    if (!e.target || !(e.target instanceof HTMLElement)) {
+      return;
+    }
+
+    const option = e.target.closest("[role='option']");
+    if (!option || !option.hasAttribute("aria-posinset")) {
+      return;
+    }
+
+    const index =
+      parseInt(option.getAttribute("aria-posinset") || "0", 10) - 1;
+    const item = suggestions[index];
+
     if (onSelect) {
       onSelect(item);
     }
@@ -146,10 +160,10 @@ const AutoSuggest: React.FC<AutoSuggestProps> = ({
           {suggestions.map((item) => (
             <Listitem
               key={item.objectID}
-              item={item}
-              highlight
               className={styles.listitem}
-            />
+            >
+              <Story item={item} highlight selectable />
+            </Listitem>
           ))}
         </Listbox>
       </Dropdown>

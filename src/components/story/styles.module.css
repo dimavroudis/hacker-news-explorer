@@ -1,30 +1,9 @@
-.container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 8px;
-}
-
 .content {
   display: inline-block;
   border: none;
   background-color: transparent;
   text-decoration: none;
   color: var(--main-text-color);
-}
-
-.content[role="button"] {
-  cursor: pointer;
-}
-
-.container[aria-selected="true"] {
-  background-color: var(--selected-bg-color);
-}
-
-.container[role="option"] {
-  cursor: pointer;
 }
 
 .title {

@@ -2,57 +2,22 @@ import { memo } from "react";
 import type { SearchResult } from "../../types/api";
 import styles from "./styles.module.css";
 
-export interface ListItem extends SearchResult {
-  disabled?: boolean;
-}
-
 interface ListitemProps {
-  item: ListItem;
-  selected?: boolean;
-  posinset?: number;
-  setsize?: number;
-  children?: React.ReactNode;
-  onClick?: (item: ListItem) => void;
-  onMouseEnter?: (e: React.MouseEvent, item: ListItem) => void;
-  onMouseMove?: (e: React.MouseEvent, item: ListItem) => void;
+  item: SearchResult;
   className?: string;
+  selectable?: boolean
   highlight?: boolean;
 }
 
 const Seperator = () => <span className={styles.seperator} />;
 
-const Listitem: React.FC<ListitemProps> = memo(
+const Story: React.FC<ListitemProps> = memo(
   ({
     item,
-    children,
-    onClick,
-    onMouseEnter,
-    onMouseMove,
     className,
-    selected,
-    setsize,
-    posinset,
+    selectable,
     highlight,
   }) => {
-    const selectable = !!onClick;
-
-    const handleOnClick = () => {
-      if (onClick) {
-        onClick(item);
-      }
-    };
-
-    const handleMouseEnter = (e: React.MouseEvent) => {
-      if (onMouseEnter) {
-        onMouseEnter(e, item);
-      }
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-      if (onMouseMove) {
-        onMouseMove(e, item);
-      }
-    };
 
     const points = !item.points
       ? "No points"
@@ -74,12 +39,6 @@ const Listitem: React.FC<ListitemProps> = memo(
     const Content = selectable || !url ? "div" : "a";
     const contentProps =
       !selectable && url ? { href: url, target: "_blank" } : {};
-    const itemProps = {
-      role: selectable ? "option" : "listitem",
-      "aria-selected": selected,
-      "aria-setsize": setsize,
-      "aria-posinset": posinset,
-    };
 
     const titleKey = "title" in item ? "title" : "story_title";
     const title =
@@ -87,20 +46,13 @@ const Listitem: React.FC<ListitemProps> = memo(
       item[titleKey] ||
       "";
 
-    const classNames = [styles.container, className]
+    const classNames = [styles.content, className]
       .filter(Boolean)
       .join(" ")
       .trim();
 
     return (
-      <div
-        {...itemProps}
-        className={classNames}
-        onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
-        onClick={handleOnClick}
-      >
-        <Content className={styles.content} {...contentProps}>
+        <Content className={classNames} {...contentProps}>
           <h3
             className={styles.title}
             dangerouslySetInnerHTML={{ __html: title }}
@@ -113,10 +65,8 @@ const Listitem: React.FC<ListitemProps> = memo(
             <span>{comments}</span>
           </p>
         </Content>
-        {children}
-      </div>
     );
   }
 );
 
-export default Listitem;
+export default Story;

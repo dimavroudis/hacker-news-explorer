@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from "react";
 import type { SearchResult, SearchResults } from "./types/api";
 import AutoSuggest from "./components/autosuggest";
-import Listitem, { ListItem } from "./components/listitem";
 
 import "./App.css";
 import Button from "./components/button";
 import useStorage from "./hooks/useStorage";
+import Story from "./components/story";
 
 const HACKER_NEWS_API = "https://hn.algolia.com/api/v1/search?query=";
 const STORAGE_KEY = "hacker_news_stories";
@@ -20,14 +20,14 @@ function App() {
   }, []);
 
   const handleSelect = useCallback(
-    (item: ListItem) => {
+    (item: SearchResult) => {
       setItems([...items, item]);
     },
     [items, setItems]
   );
 
   const handleDelete = useCallback(
-    (item: ListItem) => {
+    (item: SearchResult) => {
       const newItems = items.filter(
         (prevItem) => prevItem.objectID !== item.objectID
       );
@@ -58,11 +58,12 @@ function App() {
           <p>No saved stories</p>
         ) : (
           <>
-            <div className="saved-stories">
+            <div role="listbox" className="saved-stories">
               {items.map((item) => (
-                <Listitem key={item.objectID} item={item}>
+                <div role="listitem" key={item.objectID}>
+                  <Story item={item} />
                   <Button onClick={() => handleDelete(item)}>Delete</Button>
-                </Listitem>
+                </div>
               ))}
             </div>
           </>

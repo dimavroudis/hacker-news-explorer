@@ -1,0 +1,11 @@
+.container{
+  box-sizing: border-box;
+}
+
+.container[aria-selected="true"] {
+  background-color: var(--selected-bg-color);
+}
+
+.container[role="option"] {
+  cursor: pointer;
+}
