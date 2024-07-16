@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import debounce from "../../utils/debounce";
 import styles from "./styles.module.css";
 
 interface DropdownProps {
@@ -85,7 +86,7 @@ const Dropdown = forwardRef<HTMLDivElement | null, DropdownProps>(
       }
 
       handleResize();
-      resizeObserver.current = new ResizeObserver(handleResize);
+      resizeObserver.current = new ResizeObserver(debounce(handleResize, 10));
       if (target) {
         resizeObserver.current.observe(window.document.body);
       }
