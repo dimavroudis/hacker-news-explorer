@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { fireEvent } from "@testing-library/dom";
 import Autosuggest from ".";
-import { expect } from "vitest";
 
 const ITEMS = [
   {
@@ -62,6 +61,8 @@ describe("Autosuggest", async () => {
     render(
       <Autosuggest
         label="Search"
+        Item={"div"}
+        itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
       />
@@ -79,6 +80,8 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
+        Item={"div"}
+        itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
       />
@@ -99,6 +102,8 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
+        Item={"div"}
+        itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
       />
@@ -117,6 +122,8 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
+        Item={"div"}
+        itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
       />
@@ -137,6 +144,8 @@ describe("Autosuggest", async () => {
     const { getByRole } = render(
       <Autosuggest
         label="Search"
+        Item={"div"}
+        itemIdKey="objectID"
         placeholder="Placeholder search..."
         searchCallback={callback}
       />

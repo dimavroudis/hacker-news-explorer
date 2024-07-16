@@ -2,10 +2,7 @@ import { render, screen } from "@testing-library/react";
 import Listbox from ".";
 import Lisitem from "./listitem";
 
-const ITEMS = [
- "React",
- "Redux"
-];
+const ITEMS = ["React", "Redux"];
 
 describe("Listbox", async () => {
   it("renders a listbox element", () => {
@@ -31,10 +28,10 @@ describe("Listbox", async () => {
     expect(secondListitem).toHaveTextContent("Redux");
   });
 
-  it("renders a listbox with onSelect prop", () => {
-    const onSelect = vi.fn().mockImplementation();
+  it("renders a listbox with onSelectItem prop", () => {
+    const onSelectItem = vi.fn().mockImplementation();
     render(
-      <Listbox onSelect={onSelect}>
+      <Listbox onSelectItem={onSelectItem}>
         {ITEMS.map((item) => (
           <Lisitem key={item}>{item}</Lisitem>
         ))}
@@ -45,6 +42,6 @@ describe("Listbox", async () => {
     const firstListitem = screen.getAllByRole("option")[0];
 
     firstListitem.click();
-    expect(onSelect).toHaveBeenCalled();
+    expect(onSelectItem).toHaveBeenCalled();
   });
 });
