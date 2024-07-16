@@ -21,11 +21,13 @@ const getDropdownStyles = (target: HTMLElement | null) => {
   }
 
   const rect = target.getBoundingClientRect();
+  const heightToBottom = window.innerHeight - rect.bottom;
+
   return {
     top: rect.bottom,
     left: rect.left,
     maxWidth: rect.width,
-    height: window.innerHeight - rect.bottom - 10,
+    maxHeight: heightToBottom < 300 ? heightToBottom : 300,
   };
 };
 

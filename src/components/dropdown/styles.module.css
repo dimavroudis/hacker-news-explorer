@@ -1,7 +1,6 @@
 .dropdown {
   position: absolute;
   display: inline-block;
-  max-height: 300px;
   width: 100%;
   min-width: 300px;
   background-color: var(--main-bg-color);
