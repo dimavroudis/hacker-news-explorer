@@ -147,7 +147,8 @@ const AutoSuggest = <S extends Record<string, unknown>>({
   const listboxId = `autosuggest-listbox-${id}`;
 
   const ariaControls = isDropdownOpen ? listboxId : undefined;
-  const ariaActiveDescendant = isDropdownOpen
+  const ariaActiveDescendant =
+    isDropdownOpen && activeIndex > -1 && suggestions[activeIndex]
     ? getListItemId(suggestions[activeIndex][itemIdKey] as string)
     : undefined;
 
