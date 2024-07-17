@@ -1,17 +1,27 @@
 import { useCallback, useMemo } from "react";
 import type { SearchResult, SearchResults } from "./types/api";
+import useStorage from "./hooks/useStorage";
+import Button from "./components/button";
+import StoryDisplay from "./components/story";
 import AutoSuggest from "./components/autosuggest";
 
 import "./App.css";
-import Button from "./components/button";
-import useStorage from "./hooks/useStorage";
-import Story from "./components/story";
 
 const HACKER_NEWS_API = "https://hn.algolia.com/api/v1/search?query=";
 const STORAGE_KEY = "hacker_news_stories";
 
-const HighlihgtedStory = (props: React.ComponentProps<typeof Story>) => (
-  <Story {...props} highlight selectable />
+const HighlihgtedStory = ({
+  item: { title, story_title, author, points, num_comments, _highlightResult },
+}: {
+  item: SearchResult;
+}) => (
+  <StoryDisplay
+    title={(title || story_title) as string}
+    author={author}
+    points={points}
+    num_comments={num_comments}
+    highlightResults={_highlightResult}
+  />
 );
 
 function App() {
@@ -68,7 +78,13 @@ function App() {
             <div role="list" className="saved-stories">
               {items.map((item) => (
                 <div role="listitem" key={item.objectID}>
-                  <Story item={item} />
+                  <StoryDisplay
+                    title={(item.title || item.story_title) as string}
+                    url={(item.url || item.story_url) as string}
+                    author={item.author}
+                    points={item.points}
+                    num_comments={item.num_comments}
+                  />
                   <Button onClick={() => handleDelete(item)}>Delete</Button>
                 </div>
               ))}

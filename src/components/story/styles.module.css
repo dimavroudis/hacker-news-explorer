@@ -11,9 +11,10 @@
   margin: 0 0 0.1em;
 }
 
-.title em {
+.title mark {
   font-style: normal;
   color: var(--primary-color);
+  background-color: transparent;
 }
 .meta {
   display: flex;
