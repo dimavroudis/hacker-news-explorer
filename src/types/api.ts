@@ -1,27 +1,27 @@
-export interface SearchResult extends Record<string, unknown> {
-  _highlightResult: {
-    author: HighlightResult;
-    title?: HighlightResult;
-    url?: HighlightResult;
-    story_title?: HighlightResult;
-    story_url?: HighlightResult;
-  };
-  _tags?: string[];
+export interface BaseStory extends Record<string, unknown> {
   author: string;
   objectID: string;
-  parent_id?: number;
-  children?: number[];
   created_at: string;
   created_at_i: number;
   updated_at: string;
-  num_comments?: number;
-  comment_text?: string;
-  points: number | null;
   story_id: number;
-  title?: string;
-  story_title?: string;
-  url?: string;
-  story_url?: string;
+  children: number[];
+}
+
+export interface StoryHighlightResult {
+  author: HighlightResult;
+  title: HighlightResult;
+  url: HighlightResult;
+  story_title: undefined;
+  story_url: undefined;
+}
+
+export interface CommentHighlightResult {
+  author: HighlightResult;
+  story_title: HighlightResult;
+  story_url: HighlightResult;
+  title: undefined;
+  url: undefined;
 }
 
 export interface HighlightResult {
@@ -30,6 +30,34 @@ export interface HighlightResult {
   matchedWords: string[];
   value: string;
 }
+
+export interface Story extends BaseStory {
+  title: string;
+  url: string;
+  num_comments: number;
+  points: number;
+  _highlightResult: StoryHighlightResult;
+  comment_text: undefined;
+  story_title: undefined;
+  story_url: undefined;
+  parent_id: undefined;
+  _tags: undefined;
+}
+
+export interface Comment extends BaseStory {
+  comment_text: string;
+  story_title: string;
+  story_url: string;
+  parent_id: number;
+  points: null;
+  _tags: string[];
+  _highlightResult: CommentHighlightResult;
+  title: undefined;
+  url: undefined;
+  num_comments: undefined;
+}
+
+export type SearchResult = Story | Comment;
 
 export interface SearchResults {
   hits: SearchResult[];
